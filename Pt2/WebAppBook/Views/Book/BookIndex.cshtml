@@ -1,0 +1,56 @@
+﻿@model IEnumerable<WebAppBook.Models.Dtos.BookDto>
+
+<div class="container">
+    <h1>List Products</h1>
+    <br />
+    <form asp-action="BookIndex" method="post">
+        <div class="col-2" style="display:flex; width:100%">
+            <input class="form-control" style="width: 20%; margin-right:12px" type="text" placeholder="Search for..." name="SearchString" value="@ViewData["CurrentFilter"]" aria-label="Search" aria-describedby="btnNavbarSearch" />
+            <input type="submit" value="Search" class="btn btn-primary" />
+        </div>
+    </form>
+    <br />
+    <br />
+
+    <a class="btn btn-sm btn-success" asp-action="CreateBook">Create</a>
+    <br />
+    <br />
+    <table class="table table-bordered table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Book Id</th>
+                <th>Title</th>
+                <th>Type</th>
+                <th>Publisher</th>
+                <th>Price</th>
+                <th>Advance</th>
+                <th>Royalty</th>
+                <th>Ytd_Sales</th>
+                <th>Notes</th>
+                <th>Published Date</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="tb">
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.book_id</td>
+                    <td>@item.title</td>
+                    <td>@item.type</td>
+                    <td>@item.pub_id</td>
+                    <td>@item.price</td>
+                    <td>@item.advance</td>
+                    <td>@item.royalty</td>
+                    <td>@item.ytd_sales</td>
+                    <td>@item.note</td>
+                    <td>@item.published_date</td>
+                    <td>
+                        <a asp-route-bookId="@item.book_id" asp-action="UpdateBook" class="btn btn-sm btn-info">Update</a>
+                        <a asp-route-bookId="@item.book_id" asp-action="DeleteBook" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

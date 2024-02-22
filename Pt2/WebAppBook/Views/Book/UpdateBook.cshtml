@@ -1,0 +1,92 @@
+﻿@model WebAppBook.Models.Dtos.BookDto
+
+<form asp-action="UpdateBook" method="post">
+    <br />
+    <div class="container border p-3">
+        <h1 class="text-center">Update Book</h1>
+        <input asp-for="book_id" hidden />
+        <hr />
+        <div class="row">
+            <div class="col-2">
+                <label class="control-label pt-2" style="font-size:20px;">Title</label>
+            </div>
+            <div class="col-10 pb-3">
+                <input asp-for="title" class="form-control" />
+                <span asp-validation-for="title" class="text-danger"></span>
+            </div>
+            <div class="col-2">
+                <label class="control-label pt-2" style="font-size:20px;">Type</label>
+            </div>
+            <div class="col-10 pb-3">
+                <input asp-for="type" class="form-control" />
+                <span asp-validation-for="type" class="text-danger"></span>
+            </div>
+            <div class="col-2">
+                <label class="control-label pt-2" style="font-size:20px;">Publisher</label>
+            </div>
+            <div class="col-10 pb-3">
+                <select asp-for="pub_id" class="form-select" asp-items="ViewBag.PubList">
+                    <option disabled selected>--Select Pub--</option>
+                </select>
+            </div>
+            <div class="col-2">
+                <label class="control-label pt-2" style="font-size:20px;">Price</label>
+            </div>
+            <div class="col-10 pb-3">
+                <input asp-for="price" class="form-control" />
+                <span asp-validation-for="price" class="text-danger"></span>
+            </div>
+            <div class="col-2">
+                <label class="control-label pt-2" style="font-size:20px;">Advance</label>
+            </div>
+            <div class="col-10 pb-3">
+                <input asp-for="advance" class="form-control" />
+                <span asp-validation-for="advance" class="text-danger"></span>
+            </div>
+            <div class="col-2">
+                <label class="control-label pt-2" style="font-size:20px;">Royalty</label>
+            </div>
+            <div class="col-10 pb-3">
+                <input asp-for="royalty" class="form-control" />
+                <span asp-validation-for="royalty" class="text-danger"></span>
+            </div>
+            <div class="col-2">
+                <label class="control-label pt-2" style="font-size:20px;">Ytd_Sales</label>
+            </div>
+            <div class="col-10 pb-3">
+                <input asp-for="ytd_sales" class="form-control" />
+                <span asp-validation-for="ytd_sales" class="text-danger"></span>
+            </div>
+            <div class="col-2">
+                <label class="control-label pt-2" style="font-size:20px;">Notes</label>
+            </div>
+            <div class="col-10 pb-3">
+                <input asp-for="note" class="form-control" />
+                <span asp-validation-for="note" class="text-danger"></span>
+            </div>
+            <div class="col-2">
+                <label class="control-label pt-2" style="font-size:20px;">Published Date</label>
+            </div>
+            <div class="col-10 pb-3">
+                <input asp-for="published_date" type="date" class="form-control" />
+                <span asp-validation-for="published_date" class="text-danger"></span>
+            </div>
+
+            <div class="col-5 offset-2">
+                <a asp-action="BookIndex" class="btn-primary btn form-control ">Back to List</a>
+            </div>
+            <div class="col-5">
+                <input type="submit" value="Update" class="btn btn-success form-control" />
+
+            </div>
+
+        </div>
+
+        <div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
