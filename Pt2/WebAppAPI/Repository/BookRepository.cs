@@ -96,7 +96,7 @@ namespace WebAppAPI.Repository
                 var result = _context.Books
                     .Include(b => b.BookAuthors)
                     .ThenInclude(a => a.Author)
-                    .Where(x => x.title.ToLower().Contains(text.ToLower()) || x.BookAuthors.Any(a => a.Author.email_address.ToLower().Contains(text.ToLower())))
+                    .Where(x => x.title.ToLower().Contains(text.ToLower()) || x.BookAuthors.Any(a => a.Author.email_address.ToLower().Equals(text.ToLower())))
                     .ToList();
                 var bookDtos = _mapper.Map<IEnumerable<BookDto>>(result);
                 return bookDtos;
