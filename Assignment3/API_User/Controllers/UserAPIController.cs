@@ -3,6 +3,7 @@ using API_User.Service.IService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using System.Net;
 
 namespace API_User.Controllers
 {
@@ -17,9 +18,9 @@ namespace API_User.Controllers
             _userService = userService;
         }
 
-
         [HttpGet]
-        public async Task<IActionResult> GetMembers()
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetUsers()
         {
             var result = await _userService.GetUsers();
             if (result != null)
@@ -29,10 +30,23 @@ namespace API_User.Controllers
             return NotFound();
         }
 
-        [HttpGet("GetMemberByUserID/{userId}")]
-        public async Task<IActionResult> GetMemberByUserID([Required] string userId)
+        [HttpGet("GetUserByUserID/{userId}")]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetUserByUserID([Required] string userId)
         {
-            var result = await _userService.GetMemberByUserId(userId);
+            var result = await _userService.GetUserByUserId(userId);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            return NotFound();
+        }
+
+        [HttpGet("GetUserByEmail/{email}")]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetUserByEmail([Required] string email)
+        {
+            var result = await _userService.GetUserByEmail(email);
             if (result != null)
             {
                 return Ok(result);
@@ -41,10 +55,11 @@ namespace API_User.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddMember([FromBody] MemberAddEditDto model)
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> AddUser([FromBody] UserAddEditDto model)
         {
             var result = await _userService.CreateUser(model);
-            if (result == true)
+            if (result.IsSuccess == true)
             {
                 return Ok(result);
             }
@@ -52,10 +67,23 @@ namespace API_User.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> AddEditMember([FromBody] MemberAddEditDto model)
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> UpdateUser([FromBody] UserAddEditDto model)
         {
             var result = await _userService.UpdateUser(model);
-            if (result == true)
+            if (result.IsSuccess == true)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpPost("CreateRole")]
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> CreateRole([Required] string roleName)
+        {
+            var result = await _userService.CreateRole(roleName);
+            if (result.IsSuccess == true)
             {
                 return Ok(result);
             }
@@ -63,10 +91,11 @@ namespace API_User.Controllers
         }
 
         [HttpDelete("DeleteMember")]
-        public async Task<IActionResult> DeleteMember([Required] string userId)
+        [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> DeleteUser([Required] string userId)
         {
             var result = await _userService.RemoveUser(userId);
-            if (result == true)
+            if (result.IsSuccess == true)
             {
                 return Ok(result);
             }

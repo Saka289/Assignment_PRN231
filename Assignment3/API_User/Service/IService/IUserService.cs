@@ -5,10 +5,12 @@ namespace API_User.Service.IService
 {
     public interface IUserService
     {
-        Task<IEnumerable<MemberDto>> GetUsers();
-        Task<MemberDto> GetMemberByUserId(string userId);
-        Task<bool> CreateUser(MemberAddEditDto model);
-        Task<bool> UpdateUser(MemberAddEditDto model);
-        Task<bool> RemoveUser(string userId);
+        Task<ResponseDto> GetUsers();
+        Task<ResponseDto> GetUserByUserId(string userId);
+        Task<ResponseDto> GetUserByEmail(string email);
+        Task<ResponseDto> CreateUser(UserAddEditDto model);
+        Task<ResponseDto> UpdateUser(UserAddEditDto model);
+        Task<ResponseDto> RemoveUser(string userId);
+        Task<ResponseDto> CreateRole(string roleName);
     }
 }

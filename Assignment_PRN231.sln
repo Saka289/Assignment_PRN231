@@ -27,7 +27,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAppBook", "Pt2\WebAppBoo
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assignment3", "Assignment3", "{173D1BC0-30C7-4C8B-A664-459029D71968}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API_User", "API_User\API_User.csproj", "{18CE1A75-8A21-454B-AC4F-711FE440E470}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API_User", "Assignment3\API_User\API_User.csproj", "{18CE1A75-8A21-454B-AC4F-711FE440E470}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

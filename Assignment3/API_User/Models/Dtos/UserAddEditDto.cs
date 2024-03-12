@@ -1,6 +1,6 @@
 ﻿namespace API_User.Models.Dtos
 {
-    public class MemberAddEditDto
+    public class UserAddEditDto
     {
         public string? UserId { get; set; }
         public string Email { get; set; }

@@ -10,8 +10,8 @@ namespace API_User
         {
             var mappingConfig = new MapperConfiguration(config =>
             {
-                config.CreateMap<ApplicationUser, MemberDto>().ReverseMap();
-                config.CreateMap<ApplicationUser, MemberAddEditDto>().ReverseMap();
+                config.CreateMap<ApplicationUser, UserDto>().ReverseMap();
+                config.CreateMap<ApplicationUser, UserAddEditDto>().ReverseMap();
             });
             return mappingConfig;
         }

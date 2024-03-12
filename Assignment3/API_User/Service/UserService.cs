@@ -11,98 +11,213 @@ namespace API_User.Service
 {
     public class UserService : IUserService
     {
-        private readonly AppDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IMapper _mapper;
+        protected ResponseDto _response;
 
-        public UserService(AppDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper)
+        public UserService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper)
         {
-            _context = context;
             _userManager = userManager;
             _roleManager = roleManager;
             _mapper = mapper;
-        }
-        public async Task<bool> CreateUser(MemberAddEditDto model)
-        {
-            ApplicationUser user = new()
-            {
-                UserName = model.Email,
-                Email = model.Email,
-                NormalizedEmail = model.Email.ToLower(),
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                PhoneNumber = model.PhoneNumber,
-                EmailConfirmed = true
-            };
-            var addUser = await _userManager.CreateAsync(user, model.Password);
-            if (addUser.Succeeded)
-            {
-                string roleName = "Customer";
-                _roleManager.CreateAsync(new IdentityRole(roleName)).GetAwaiter().GetResult();
-                await _userManager.AddToRoleAsync(user, roleName);
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-
+            _response = new ResponseDto();
         }
 
-        public async Task<MemberDto> GetMemberByUserId(string userId)
+        public async Task<ResponseDto> CreateUser(UserAddEditDto model)
         {
-            var member = await _userManager.Users.Where(u => u.Id.Equals(userId)).FirstOrDefaultAsync();
-            var result = _mapper.Map<MemberDto>(member);
-            if (result == null)
+            try
             {
-                return null;
+                ApplicationUser user = new()
+                {
+                    UserName = model.Email,
+                    Email = model.Email,
+                    NormalizedEmail = model.Email.ToLower(),
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    PhoneNumber = model.PhoneNumber,
+                    EmailConfirmed = true
+                };
+                var addUser = await _userManager.CreateAsync(user, model.Password);
+                if (addUser.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(user, "USER");
+                }
+                else
+                {
+                    _response.Result = false;
+                    _response.IsSuccess = false;
+                    _response.Message = addUser.Errors.FirstOrDefault().Description.ToString();
+                    return _response;
+                }
+                _response.IsSuccess = true;
+                _response.Result = true;
+                _response.Message = "Create Successfully !!!";
             }
-            return result;
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+            return _response;
         }
 
-        public async Task<IEnumerable<MemberDto>> GetUsers()
+        public async Task<ResponseDto> UpdateUser(UserAddEditDto model)
         {
-            var members = await _userManager.Users.ToListAsync();
-            var result = _mapper.Map<IEnumerable<MemberDto>>(members);
-            if (result == null)
+            try
             {
-                return null;
+                ApplicationUser user = await _userManager.FindByIdAsync(model.UserId);
+                if (user == null)
+                {
+                    _response.Result = false;
+                    _response.IsSuccess = false;
+                    _response.Message = "Not found !!!";
+                    return _response;
+                }
+                user.FirstName = model.FirstName;
+                user.LastName = model.LastName;
+                user.PhoneNumber = model.PhoneNumber;
+                user.Email = model.Email;
+                user.UserName = model.Email;
+
+                if (!string.IsNullOrEmpty(model.Password))
+                {
+                    await _userManager.RemovePasswordAsync(user);
+                    var result = await _userManager.AddPasswordAsync(user, model.Password);
+                    if (!result.Succeeded)
+                    {
+                        _response.Result = false;
+                        _response.IsSuccess = false;
+                        _response.Message = result.Errors.FirstOrDefault().Description.ToString();
+                        return _response;
+                    }
+                }
+                _response.IsSuccess = true;
+                _response.Result = true;
+                _response.Message = "Update Successfully !!!";
             }
-            return result;
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+            return _response;
         }
 
-        public async Task<bool> RemoveUser(string userId)
+
+        public async Task<ResponseDto> GetUserByEmail(string email)
         {
-            var member = await _userManager.Users.Where(u => u.Id.Equals(userId)).FirstOrDefaultAsync();
-            if (member == null)
+            try
             {
-                return false;
+                var users = await _userManager.Users.Where(u => u.Email.Equals(email)).FirstOrDefaultAsync();
+                if (users == null)
+                {
+                    _response.Result = false;
+                    _response.Message = "Not found.";
+                    _response.IsSuccess = false;
+                    return _response;
+                }
+                _response.Result = _mapper.Map<UserDto>(users);
             }
-            await _userManager.DeleteAsync(member);
-            return true;
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+            return _response;
         }
 
-        public async Task<bool> UpdateUser(MemberAddEditDto model)
+        public async Task<ResponseDto> GetUserByUserId(string userId)
         {
-            ApplicationUser user = await _userManager.FindByIdAsync(model.UserId);
-            if (user == null)
+            try
             {
-                return false;
+                var users = await _userManager.Users.Where(u => u.Id.Equals(userId)).FirstOrDefaultAsync();
+                if (users == null)
+                {
+                    _response.Result = false;
+                    _response.Message = "Not found.";
+                    _response.IsSuccess = false;
+                    return _response;
+                }
+                _response.Result = _mapper.Map<UserDto>(users);
             }
-            user.FirstName = model.FirstName;
-            user.LastName = model.LastName;
-            user.PhoneNumber = model.PhoneNumber;
-            user.Email = model.Email;
-            user.UserName = model.Email;
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+            return _response;
+        }
 
-            await _userManager.RemovePasswordAsync(user);
-            var result = await _userManager.AddPasswordAsync(user, model.Password);
-            if (!result.Succeeded)
+        public async Task<ResponseDto> GetUsers()
+        {
+            try
             {
-                return false;
+                var users = await _userManager.Users.ToListAsync();
+                if (users == null)
+                {
+                    _response.Result = false;
+                    _response.Message = "Not found.";
+                    _response.IsSuccess = false;
+                    return _response;
+                }
+                _response.Result = _mapper.Map<IEnumerable<UserDto>>(users);
             }
-            return true;
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+            return _response;
+        }
+
+        public async Task<ResponseDto> RemoveUser(string userId)
+        {
+            try
+            {
+                var user = await _userManager.Users.Where(u => u.Id.Equals(userId)).FirstOrDefaultAsync();
+                if (user == null)
+                {
+                    _response.Result = false;
+                    _response.IsSuccess = false;
+                    _response.Message = "Not found !!!";
+                    return _response;
+                }
+                await _userManager.DeleteAsync(user);
+                _response.Result = true;
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+            return _response;
+        }
+
+        public async Task<ResponseDto> CreateRole(string roleName)
+        {
+            try
+            {
+                if (!_roleManager.RoleExistsAsync(roleName).GetAwaiter().GetResult())
+                {
+                    await _roleManager.CreateAsync(new IdentityRole(roleName));
+                }
+                else
+                {
+                    _response.Result = false;
+                    _response.IsSuccess = false;
+                    _response.Message = "Create Role Failed !!!";
+                    return _response;
+                }
+                _response.Result = true;
+                _response.Message = "Create Role Successfully !!!";
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+            return _response;
         }
     }
 }
