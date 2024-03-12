@@ -150,7 +150,7 @@
                         + "<td>" + item.phoneNumber + "</td>"
                         + "<td>" + item.userName + "</td>"
                         + "<td class='d-flex'>" + "<button data-userid='" + item.id + "' id='btnDelete' class='btn btn-danger me-3'>Delete</button>"
-                        + "<a href='User/Update/" + item.id + "' id='btnDelete' class='btn btn-warning'>Update</a>" + "</td>"
+                        + "<a href='User/Update/" + item.id + "' class='btn btn-warning'>Update</a>" + "</td>"
                         + "</tr>";
                 });
             } else if (data.length != 0) {
@@ -161,7 +161,7 @@
                     + "<td>" + data.phoneNumber + "</td>"
                     + "<td>" + data.userName + "</td>"
                     + "<td class='d-flex'>" + "<button data-userid='" + data.id + "' id='btnDelete' class='btn btn-danger me-3'>Delete</button>"
-                    + "<a href='User/Update/" + data.id + "' id='btnDelete' class='btn btn-warning'>Update</a>" + "</td>"
+                    + "<a href='User/Update/" + data.id + "' class='btn btn-warning'>Update</a>" + "</td>"
                     + "</tr>";
             }
             $('#tableBodyId').append(rowHTML);
