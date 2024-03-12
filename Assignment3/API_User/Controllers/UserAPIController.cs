@@ -59,7 +59,7 @@ namespace API_User.Controllers
         public async Task<IActionResult> AddUser([FromBody] UserAddEditDto model)
         {
             var result = await _userService.CreateUser(model);
-            if (result.IsSuccess == true)
+            if (result.IsSuccess == true || Convert.ToBoolean(result.Result))
             {
                 return Ok(result);
             }
@@ -71,7 +71,7 @@ namespace API_User.Controllers
         public async Task<IActionResult> UpdateUser([FromBody] UserAddEditDto model)
         {
             var result = await _userService.UpdateUser(model);
-            if (result.IsSuccess == true)
+            if (result.IsSuccess == true || Convert.ToBoolean(result.Result))
             {
                 return Ok(result);
             }
@@ -90,7 +90,7 @@ namespace API_User.Controllers
             return BadRequest(result);
         }
 
-        [HttpDelete("DeleteMember")]
+        [HttpDelete("DeleteMember/{userId}")]
         [ProducesResponseType(typeof(ResponseDto), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> DeleteUser([Required] string userId)
         {

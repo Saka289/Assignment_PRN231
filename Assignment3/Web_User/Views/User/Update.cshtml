@@ -1,0 +1,135 @@
+﻿<div class="container border p-3">
+    <h1 class="text-center">Update User</h1>
+
+    <hr />
+    <div class="row">
+        <div class="col-2">
+            <label class="control-label pt-2" style="font-size:20px;">User ID</label>
+        </div>
+        <div class="col-10 pb-3">
+            <input type="text" id="userid" name="userid" placeholder="Enter Email" required readonly class="form-control" />
+        </div>
+        <div class="col-2">
+            <label class="control-label pt-2" style="font-size:20px;">Email</label>
+        </div>
+        <div class="col-10 pb-3">
+            <input type="text" id="email" name="email" placeholder="Enter Email" required class="form-control" />
+        </div>
+        <div class="col-2">
+            <label class="control-label pt-2" style="font-size:20px;">FirstName</label>
+        </div>
+        <div class="col-10 pb-3">
+            <input type="text" id="firstname" name="firstname" placeholder="Enter FirstName" required class="form-control" />
+        </div>
+        <div class="col-2">
+            <label class="control-label pt-2" style="font-size:20px;">LastName</label>
+        </div>
+        <div class="col-10 pb-3">
+            <input type="text" id="lastname" name="lastname" placeholder="Enter LastName" required class="form-control" />
+        </div>
+        <div class="col-2">
+            <label class="control-label pt-2" style="font-size:20px;">PhoneNumber</label>
+        </div>
+        <div class="col-10 pb-3">
+            <input type="text" id="phonenumber" name="phonenumber" placeholder="Enter PhoneNumber" required class="form-control" />
+        </div>
+        <div class="col-2">
+            <label class="control-label pt-2" style="font-size:20px;">Password</label>
+        </div>
+        <div class="col-10 pb-3">
+            <input type="password" id="password" name="password" placeholder="Enter New Password" required class="form-control" />
+        </div>
+        <div class="col-5 offset-2">
+            <a asp-action="Index" class="btn-primary btn form-control ">Back to Users</a>
+        </div>
+        <div class="col-5">
+            <button id="btnUpdate" class="btn btn-success form-control">Update User</button>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            GetUserByUserId();
+        });
+
+        function GetUserByUserId() {
+            var url = window.location.href;
+            var userId = url.substring(url.lastIndexOf('/') + 1);
+            $.ajax({
+                url: `https://localhost:7153/api/UserAPI/GetUserByUserID/${userId}`,
+                type: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                success: function (data) {
+                    if (data.isSuccess) {
+                        LoadData(data.result);
+                    } else {
+                        toastr.error(data.message);
+                    }
+                },
+                error: function (data) {
+                    alert("Error loading user data");
+                }
+            });
+        };
+
+        $("#btnUpdate").click(function () {
+            var user = {
+                userid: $("#userid").val(),
+                email: $("#email").val(),
+                firstname: $("#firstname").val(),
+                lastname: $("#lastname").val(),
+                phonenumber: $("#phonenumber").val(),
+                password: $("#password").val(),
+            };
+
+            if (validateUser(user)) {
+                $.ajax({
+                    url: `https://localhost:7153/api/UserAPI`,
+                    type: "PUT",
+                    dataType: "json",
+                    data: JSON.stringify(user),
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    success: function (data) {
+                        if (data.isSuccess) {
+                            toastr.success(data.message);
+                            setTimeout(function () {
+                                window.location.href = "/User";
+                            }, 1000);
+                        } else {
+                            toastr.error(data.message);
+                        }
+                    },
+                    error: function (data) {
+                        alert("Error loading user data");
+                    }
+                });
+            }
+        });
+
+        function validateUser(user) {
+            for (var key in user) {
+                var value = user[key];
+                if (value === null || value === "") {
+                    toastr.warning(key + " is required!");
+                    return false;
+                }
+            }
+            return true;
+        };
+
+        function LoadData(data) {
+            $("#userid").val(data.id);
+            $("#email").val(data.userName);
+            $("#firstname").val(data.firstName);
+            $("#lastname").val(data.lastName);
+            $("#phonenumber").val(data.phoneNumber);
+        };
+    </script>
+}

@@ -45,7 +45,7 @@ namespace API_User.Service
                 }
                 else
                 {
-                    _response.Result = false;
+                    _response.Result = true;
                     _response.IsSuccess = false;
                     _response.Message = addUser.Errors.FirstOrDefault().Description.ToString();
                     return _response;
@@ -86,7 +86,7 @@ namespace API_User.Service
                     var result = await _userManager.AddPasswordAsync(user, model.Password);
                     if (!result.Succeeded)
                     {
-                        _response.Result = false;
+                        _response.Result = true;
                         _response.IsSuccess = false;
                         _response.Message = result.Errors.FirstOrDefault().Description.ToString();
                         return _response;
@@ -185,6 +185,7 @@ namespace API_User.Service
                 }
                 await _userManager.DeleteAsync(user);
                 _response.Result = true;
+                _response.Message = "Remove Successfully !!!";
             }
             catch (Exception ex)
             {

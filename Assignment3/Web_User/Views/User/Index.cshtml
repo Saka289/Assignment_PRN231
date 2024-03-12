@@ -1,0 +1,170 @@
+﻿<div class="container">
+    <h1>Manager User</h1>
+    <br />
+    <div class="col-2" style="display:flex; width:100%">
+        <input class="form-control" style="width: 25%; margin-right:12px" type="text" placeholder="Search for..." id="inputSearch" value="@ViewData["CurrentFilter"]" aria-label="Search" aria-describedby="btnNavbarSearch" />
+        <button id="btnSearch" class="btn btn-primary">Search</button>
+    </div>
+    <br />
+
+    <a class="btn btn-success" asp-action="Create">Create User</a>
+    <br />
+    <br />
+    <table class="table table-bordered table-striped table-hover">
+        <thead>
+
+            <tr>
+                <th>User ID</th>
+                <th>UserName</th>
+                <th>FirstName</th>
+                <th>LastName</th>
+                <th>PhoneNumber</th>
+                <th>Email</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="tableBodyId">
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            GetUsers();
+        });
+
+        function GetUsers() {
+            $.ajax({
+                url: 'https://localhost:7153/api/UserAPI',
+                type: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                success: function (data) {
+                    if (data.isSuccess) {
+                        LoadTableBodyData(data.result);
+                    } else {
+                        alert("Not found users data !!!");
+                    }
+                },
+                error: function () {
+                    alert("Error loading user data");
+                }
+            });
+        };
+
+        $("#btnSearch").click(function () {
+            var inputValue = $('#inputSearch').val();
+            if (inputValue !== null && inputValue !== "") {
+                SearchByUserId(inputValue, function (result) {
+                    if (result != null) {
+                        LoadTableBodyData(result);
+                    } else {
+                        SearchByEmail(inputValue, function (result) {
+                            if (result != null) {
+                                LoadTableBodyData(result);
+                            } else {
+                                toastr.success('Not found user data !!!');
+                            }
+                        });
+                    }
+                });
+            } else {
+                toastr.warning('Input is empty !!!');
+            }
+        });
+
+
+        $(document).on('click', '#btnDelete', function () {
+            var userId = $(this).data("userid");
+            $.ajax({
+                url: `https://localhost:7153/api/UserAPI/DeleteMember/${userId}`,
+                type: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                success: function (data) {
+                    if (data.isSuccess) {
+                        GetUsers();
+                        toastr.success(data.message);
+                    } else {
+                        alert("Not found user data !!!");
+                    }
+                },
+                error: function () {
+                    alert("Error loading user data");
+                }
+            });
+        });
+
+        function SearchByUserId(userId, callback) {
+            $.ajax({
+                url: `https://localhost:7153/api/UserAPI/GetUserByUserID/${userId}`,
+                type: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                success: function (data) {
+                    if (data.isSuccess) {
+                        callback(data.result);
+                    } else {
+                        callback(null);
+                    }
+                },
+                error: function () {
+                    alert("Error loading user data");
+                }
+            })
+        };
+
+        function SearchByEmail(email, callback) {
+            $.ajax({
+                url: `https://localhost:7153/api/UserAPI/GetUserByEmail/${email}`,
+                type: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                success: function (data) {
+                    if (data.isSuccess) {
+                        callback(data.result);
+                    } else {
+                        callback(null);
+                    }
+                },
+                error: function () {
+                    alert("Error loading user data");
+                }
+            })
+        };
+
+        function LoadTableBodyData(data) {
+            $('#tableBodyId').empty();
+            var rowHTML = "<tr>";
+            if (data.length > 0) {
+                $.each(data, function (index, item) {
+                    rowHTML += "<td>" + item.id + "</td>"
+                        + "<td>" + item.userName + "</td>"
+                        + "<td>" + item.firstName + "</td>"
+                        + "<td>" + item.lastName + "</td>"
+                        + "<td>" + item.phoneNumber + "</td>"
+                        + "<td>" + item.userName + "</td>"
+                        + "<td class='d-flex'>" + "<button data-userid='" + item.id + "' id='btnDelete' class='btn btn-danger me-3'>Delete</button>"
+                        + "<a href='User/Update/" + item.id + "' id='btnDelete' class='btn btn-warning'>Update</a>" + "</td>"
+                        + "</tr>";
+                });
+            } else if (data.length != 0) {
+                rowHTML += "<td>" + data.id + "</td>"
+                    + "<td>" + data.userName + "</td>"
+                    + "<td>" + data.firstName + "</td>"
+                    + "<td>" + data.lastName + "</td>"
+                    + "<td>" + data.phoneNumber + "</td>"
+                    + "<td>" + data.userName + "</td>"
+                    + "<td class='d-flex'>" + "<button data-userid='" + data.id + "' id='btnDelete' class='btn btn-danger me-3'>Delete</button>"
+                    + "<a href='User/Update/" + data.id + "' id='btnDelete' class='btn btn-warning'>Update</a>" + "</td>"
+                    + "</tr>";
+            }
+            $('#tableBodyId').append(rowHTML);
+        };
+    </script>
+}
