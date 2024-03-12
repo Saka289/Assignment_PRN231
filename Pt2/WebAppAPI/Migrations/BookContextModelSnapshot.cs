@@ -22,7 +22,7 @@ namespace WebAppAPI.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("WebAppAPIPt1.Models.Author", b =>
+            modelBuilder.Entity("WebAppAPI.Models.Author", b =>
                 {
                     b.Property<int>("author_id")
                         .ValueGeneratedOnAdd()
@@ -67,7 +67,7 @@ namespace WebAppAPI.Migrations
                     b.ToTable("Authors");
                 });
 
-            modelBuilder.Entity("WebAppAPIPt1.Models.Book", b =>
+            modelBuilder.Entity("WebAppAPI.Models.Book", b =>
                 {
                     b.Property<int>("book_id")
                         .ValueGeneratedOnAdd()
@@ -115,7 +115,7 @@ namespace WebAppAPI.Migrations
                     b.ToTable("Books");
                 });
 
-            modelBuilder.Entity("WebAppAPIPt1.Models.BookAuthor", b =>
+            modelBuilder.Entity("WebAppAPI.Models.BookAuthor", b =>
                 {
                     b.Property<int>("author_id")
                         .HasColumnType("int");
@@ -137,7 +137,7 @@ namespace WebAppAPI.Migrations
                     b.ToTable("BookAuthors");
                 });
 
-            modelBuilder.Entity("WebAppAPIPt1.Models.Publisher", b =>
+            modelBuilder.Entity("WebAppAPI.Models.Publisher", b =>
                 {
                     b.Property<int>("pub_id")
                         .ValueGeneratedOnAdd()
@@ -163,9 +163,9 @@ namespace WebAppAPI.Migrations
                     b.ToTable("Publishers");
                 });
 
-            modelBuilder.Entity("WebAppAPIPt1.Models.Book", b =>
+            modelBuilder.Entity("WebAppAPI.Models.Book", b =>
                 {
-                    b.HasOne("WebAppAPIPt1.Models.Publisher", "Publisher")
+                    b.HasOne("WebAppAPI.Models.Publisher", "Publisher")
                         .WithMany("Books")
                         .HasForeignKey("pub_id")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -174,15 +174,15 @@ namespace WebAppAPI.Migrations
                     b.Navigation("Publisher");
                 });
 
-            modelBuilder.Entity("WebAppAPIPt1.Models.BookAuthor", b =>
+            modelBuilder.Entity("WebAppAPI.Models.BookAuthor", b =>
                 {
-                    b.HasOne("WebAppAPIPt1.Models.Author", "Author")
+                    b.HasOne("WebAppAPI.Models.Author", "Author")
                         .WithMany("BookAuthors")
                         .HasForeignKey("author_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WebAppAPIPt1.Models.Book", "Book")
+                    b.HasOne("WebAppAPI.Models.Book", "Book")
                         .WithMany("BookAuthors")
                         .HasForeignKey("book_id")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -193,17 +193,17 @@ namespace WebAppAPI.Migrations
                     b.Navigation("Book");
                 });
 
-            modelBuilder.Entity("WebAppAPIPt1.Models.Author", b =>
+            modelBuilder.Entity("WebAppAPI.Models.Author", b =>
                 {
                     b.Navigation("BookAuthors");
                 });
 
-            modelBuilder.Entity("WebAppAPIPt1.Models.Book", b =>
+            modelBuilder.Entity("WebAppAPI.Models.Book", b =>
                 {
                     b.Navigation("BookAuthors");
                 });
 
-            modelBuilder.Entity("WebAppAPIPt1.Models.Publisher", b =>
+            modelBuilder.Entity("WebAppAPI.Models.Publisher", b =>
                 {
                     b.Navigation("Books");
                 });
